@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tanmay Unadkat - Odoo Developer</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f1117; color: #e2e8f0; }
+
+  .hero { background: linear-gradient(135deg, #1a1f2e 0%, #0f1117 100%); padding: 80px 40px; text-align: center; border-bottom: 1px solid #2d3748; }
+  .avatar { width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, #6c63ff, #a855f7); display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 700; color: white; margin: 0 auto 24px; }
+  .hero h1 { font-size: 42px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+  .hero .title { font-size: 18px; color: #a78bfa; margin-bottom: 16px; }
+  .hero .subtitle { font-size: 14px; color: #94a3b8; margin-bottom: 32px; }
+  .badges { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .badge { background: #1e2a3a; border: 1px solid #334155; padding: 6px 16px; border-radius: 20px; font-size: 13px; color: #94a3b8; }
+  .badge.green { background: #0d2a1f; border-color: #16a34a; color: #4ade80; }
+
+  nav { background: #1a1f2e; padding: 16px 40px; display: flex; gap: 32px; justify-content: center; border-bottom: 1px solid #2d3748; position: sticky; top: 0; z-index: 100; }
+  nav a { color: #94a3b8; text-decoration: none; font-size: 14px; transition: color 0.2s; }
+  nav a:hover { color: #a78bfa; }
+
+  section { padding: 60px 40px; max-width: 900px; margin: 0 auto; }
+  h2 { font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+  .section-line { width: 50px; height: 3px; background: linear-gradient(90deg, #6c63ff, #a855f7); border-radius: 2px; margin-bottom: 40px; }
+
+  .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+  .skill-card { background: #1a1f2e; border: 1px solid #2d3748; border-radius: 12px; padding: 20px; text-align: center; transition: border-color 0.2s; }
+  .skill-card:hover { border-color: #6c63ff; }
+  .skill-icon { font-size: 28px; margin-bottom: 10px; }
+  .skill-name { font-size: 14px; font-weight: 600; color: #e2e8f0; margin-bottom: 4px; }
+  .skill-level { font-size: 12px; color: #64748b; }
+
+  .projects-grid { display: grid; gap: 24px; }
+  .project-card { background: #1a1f2e; border: 1px solid #2d3748; border-radius: 16px; padding: 28px; transition: border-color 0.2s; }
+  .project-card:hover { border-color: #6c63ff; }
+  .project-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+  .project-title { font-size: 18px; font-weight: 600; color: #fff; }
+  .project-tag { background: #1e1040; border: 1px solid #6c63ff; color: #a78bfa; font-size: 11px; padding: 3px 10px; border-radius: 20px; }
+  .project-desc { font-size: 14px; color: #94a3b8; line-height: 1.7; margin-bottom: 16px; }
+  .tech-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tech-tag { background: #0f1117; border: 1px solid #334155; color: #64748b; font-size: 12px; padding: 3px 10px; border-radius: 6px; }
+
+  .versions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+  .version-badge { background: #1a1f2e; border: 1px solid #334155; padding: 8px 20px; border-radius: 8px; font-size: 14px; color: #a78bfa; font-weight: 600; }
+
+  .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+  .contact-card { background: #1a1f2e; border: 1px solid #2d3748; border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 14px; text-decoration: none; transition: border-color 0.2s; }
+  .contact-card:hover { border-color: #6c63ff; }
+  .contact-icon { width: 40px; height: 40px; border-radius: 10px; background: #1e1040; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+  .contact-label { font-size: 12px; color: #64748b; }
+  .contact-value { font-size: 14px; color: #e2e8f0; font-weight: 500; }
+
+  footer { text-align: center; padding: 40px; border-top: 1px solid #2d3748; color: #475569; font-size: 13px; }
+  .divider { border: none; border-top: 1px solid #2d3748; margin: 0; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="avatar">TU</div>
+  <h1>Tanmay Unadkat</h1>
+  <div class="title">Odoo Developer</div>
+  <div class="subtitle">📍 India &nbsp;|&nbsp; 2 Years Experience &nbsp;|&nbsp; Open to Freelance & Full-time</div>
+  <div class="badges">
+    <span class="badge green">🟢 Available for hire</span>
+    <span class="badge">Odoo 15 · 16 · 17 · 18 · 19</span>
+    <span class="badge">Python · XML · OWL</span>
+  </div>
+</div>
+
+<nav>
+  <a href="#skills">Skills</a>
+  <a href="#projects">Projects</a>
+  <a href="#versions">Experience</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+<section id="skills">
+  <h2>Skills</h2>
+  <div class="section-line"></div>
+  <div class="skills-grid">
+    <div class="skill-card">
+      <div class="skill-icon">🐍</div>
+      <div class="skill-name">Python</div>
+      <div class="skill-level">Models · Wizards · Controllers</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">📄</div>
+      <div class="skill-name">XML & QWeb</div>
+      <div class="skill-level">Views · Reports · Templates</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">⚙️</div>
+      <div class="skill-name">Odoo Framework</div>
+      <div class="skill-level">Custom Module Dev</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🗄️</div>
+      <div class="skill-name">PostgreSQL</div>
+      <div class="skill-level">Queries · DB Management</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🦉</div>
+      <div class="skill-name">JavaScript / OWL</div>
+      <div class="skill-level">Frontend Components</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🔀</div>
+      <div class="skill-name">Git & GitHub</div>
+      <div class="skill-level">Version Control</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="projects">
+  <h2>Projects</h2>
+  <div class="section-line"></div>
+  <div class="projects-grid">
+    <div class="project-card">
+      <div class="project-header">
+        <div class="project-title">📦 Stock Newsletter Alert</div>
+        <span class="project-tag">Odoo Module</span>
+      </div>
+      <div class="project-desc">
+        Automatically sends email notifications to newsletter subscribers when a product's stock falls below a defined threshold — and again when the stock is replenished. Helps businesses keep customers informed about product availability in real time.
+      </div>
+      <div class="tech-tags">
+        <span class="tech-tag">Python</span>
+        <span class="tech-tag">XML</span>
+        <span class="tech-tag">QWeb</span>
+        <span class="tech-tag">Email/SMTP</span>
+        <span class="tech-tag">Odoo Stock</span>
+      </div>
+    </div>
+    <div class="project-card" style="border-style: dashed; opacity: 0.5;">
+      <div class="project-header">
+        <div class="project-title">🔧 More projects coming soon...</div>
+      </div>
+      <div class="project-desc">Additional custom Odoo modules will be added here.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="versions">
+  <h2>Odoo Experience</h2>
+  <div class="section-line"></div>
+  <p style="color: #94a3b8; margin-bottom: 20px; font-size: 14px;">Versions I have worked with:</p>
+  <div class="versions">
+    <span class="version-badge">Odoo 15</span>
+    <span class="version-badge">Odoo 16</span>
+    <span class="version-badge">Odoo 17</span>
+    <span class="version-badge">Odoo 18</span>
+    <span class="version-badge">Odoo 19</span>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="contact">
+  <h2>Contact Me</h2>
+  <div class="section-line"></div>
+  <div class="contact-grid">
+    <a class="contact-card" href="https://github.com/TanmayUnadkat" target="_blank">
+      <div class="contact-icon">🐙</div>
+      <div>
+        <div class="contact-label">GitHub</div>
+        <div class="contact-value">TanmayUnadkat</div>
+      </div>
+    </a>
+    <a class="contact-card" href="mailto:uts@gmail.com">
+      <div class="contact-icon">📧</div>
+      <div>
+        <div class="contact-label">Email</div>
+        <div class="contact-value">uts@gmail.com</div>
+      </div>
+    </a>
+    <a class="contact-card" href="https://www.linkedin.com/in/tanmay-u" target="_blank">
+      <div class="contact-icon">💼</div>
+      <div>
+        <div class="contact-label">LinkedIn</div>
+        <div class="contact-value">tanmay-u</div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<footer>
+  Built by Tanmay Unadkat · Odoo Developer · India
+</footer>
+
+</body>
+</html>
