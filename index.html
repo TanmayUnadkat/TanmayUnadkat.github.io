@@ -228,6 +228,7 @@ hr.div { border: none; border-top: 1px solid var(--border); max-width: 1020px; m
   box-shadow: var(--shadow);
   transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
   position: relative; overflow: hidden;
+  cursor: pointer;
 }
 .proj-card::before {
   content: '';
@@ -238,13 +239,14 @@ hr.div { border: none; border-top: 1px solid var(--border); max-width: 1020px; m
 }
 .proj-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-3px); border-color: var(--border2); }
 .proj-card:hover::before { transform: scaleX(1); }
-.proj-card.dim { opacity: 0.72; border-style: dashed; }
-.proj-card.dim:hover { opacity: 0.9; }
+.proj-card.dim { opacity: 0.72; border-style: dashed; cursor: default; }
+.proj-card.dim:hover { opacity: 0.9; transform: none; box-shadow: var(--shadow); }
+.proj-card.dim::before { display: none; }
 
 .proj-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
 .proj-title { font-size: 18px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 9px; }
 .proj-title svg { width: 20px; height: 20px; flex-shrink: 0; color: var(--teal); }
-.proj-badges { display: flex; gap: 6px; }
+.proj-badges { display: flex; gap: 6px; align-items: center; }
 .badge {
   font-size: 10px; font-weight: 700; letter-spacing: 0.6px;
   text-transform: uppercase; padding: 4px 10px; border-radius: 6px;
@@ -260,6 +262,235 @@ hr.div { border: none; border-top: 1px solid var(--border); max-width: 1020px; m
   background: var(--bg3); color: var(--text3);
   border: 1px solid var(--border);
 }
+
+/* ── VIEW DETAILS HINT ── */
+.proj-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+.proj-view-hint {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600; color: var(--purple);
+  opacity: 0.7;
+  transition: opacity 0.2s, gap 0.2s;
+}
+.proj-card:hover .proj-view-hint { opacity: 1; gap: 10px; }
+.proj-view-hint svg { width: 14px; height: 14px; }
+
+/* ── MODAL OVERLAY ── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(28, 28, 46, 0.55);
+  backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.modal-overlay.open {
+  opacity: 1; pointer-events: all;
+}
+
+/* ── MODAL BOX ── */
+.modal {
+  background: #fff;
+  border-radius: 20px;
+  max-width: 780px; width: 100%;
+  max-height: 88vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 80px rgba(113,75,103,0.22), 0 4px 16px rgba(0,0,0,0.08);
+  transform: translateY(28px) scale(0.97);
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+}
+.modal-overlay.open .modal {
+  transform: translateY(0) scale(1);
+}
+
+/* scrollbar styling */
+.modal::-webkit-scrollbar { width: 5px; }
+.modal::-webkit-scrollbar-track { background: transparent; }
+.modal::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 10px; }
+
+/* ── MODAL HEADER ── */
+.modal-header {
+  padding: 32px 36px 24px;
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 2;
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+}
+.modal-header-top {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  margin-bottom: 14px;
+}
+.modal-title {
+  font-size: 22px; font-weight: 800; letter-spacing: -0.5px;
+  color: var(--text);
+  display: flex; align-items: center; gap: 10px;
+}
+.modal-title svg { width: 22px; height: 22px; flex-shrink: 0; color: var(--teal); }
+.modal-close {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: var(--bg3); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s;
+}
+.modal-close:hover { background: var(--purple-bg2); border-color: var(--purple-light); }
+.modal-close svg { width: 16px; height: 16px; color: var(--text2); }
+
+.modal-badges { display: flex; gap: 7px; flex-wrap: wrap; }
+
+/* ── MODAL BODY ── */
+.modal-body { padding: 28px 36px 36px; }
+
+.modal-section { margin-bottom: 28px; }
+.modal-section:last-child { margin-bottom: 0; }
+.modal-section-title {
+  font-size: 11px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--teal);
+  margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.modal-section-title::before {
+  content: ''; width: 14px; height: 2px;
+  background: var(--teal); border-radius: 2px;
+}
+.modal-desc {
+  font-size: 15px; color: var(--text2); line-height: 1.85;
+}
+
+/* ── FEATURE LIST ── */
+.feature-list {
+  display: grid; gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+.feature-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 13px; color: var(--text2); line-height: 1.5;
+}
+.feature-dot {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--teal-bg);
+  border: 1px solid rgba(0,160,157,0.3);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+}
+.feature-dot::after {
+  content: '';
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--teal);
+}
+
+/* ── TECH STACK IN MODAL ── */
+.modal-tech-row { display: flex; gap: 7px; flex-wrap: wrap; }
+.modal-tech {
+  font-size: 12px; font-weight: 600;
+  padding: 6px 14px; border-radius: 8px;
+  background: var(--purple-bg); color: var(--purple);
+  border: 1px solid rgba(113,75,103,0.15);
+}
+
+/* ── SCREENSHOT GALLERY ── */
+.screenshot-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+.screenshot-placeholder {
+  aspect-ratio: 16/10;
+  background: linear-gradient(135deg, var(--bg2) 0%, var(--purple-bg) 100%);
+  border: 1.5px dashed var(--border2);
+  border-radius: 10px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 8px;
+  color: var(--text3);
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.8px;
+  text-align: center;
+  padding: 16px;
+  position: relative; overflow: hidden;
+}
+.screenshot-placeholder::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(113,75,103,0.02) 10px,
+    rgba(113,75,103,0.02) 20px
+  );
+}
+.screenshot-placeholder svg {
+  width: 28px; height: 28px;
+  opacity: 0.35;
+}
+.screenshot-placeholder .ph-label {
+  font-size: 10px; opacity: 0.6;
+  line-height: 1.4;
+}
+.screenshot-upload-note {
+  background: var(--teal-bg);
+  border: 1px solid rgba(0,160,157,0.2);
+  border-radius: 10px;
+  padding: 14px 18px;
+  font-size: 13px; color: var(--teal);
+  display: flex; align-items: flex-start; gap: 10px;
+  margin-top: 12px;
+}
+.screenshot-upload-note svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; }
+
+/* real screenshots */
+.proj-screenshot {
+  width: 100%; aspect-ratio: 16/10;
+  object-fit: cover; border-radius: 10px;
+  border: 1px solid var(--border);
+  display: block;
+  cursor: zoom-in;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.proj-screenshot:hover { transform: scale(1.02); box-shadow: var(--shadow-hover); }
+
+/* ── IMAGE LIGHTBOX ── */
+.lightbox-overlay {
+  position: fixed; inset: 0; z-index: 2000;
+  background: rgba(10,10,20,0.9);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s;
+}
+.lightbox-overlay.open { opacity: 1; pointer-events: all; }
+.lightbox-img {
+  max-width: 100%; max-height: 90vh;
+  border-radius: 12px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+  transform: scale(0.95);
+  transition: transform 0.25s cubic-bezier(0.34, 1.3, 0.64, 1);
+}
+.lightbox-overlay.open .lightbox-img { transform: scale(1); }
+.lightbox-close {
+  position: absolute; top: 20px; right: 20px;
+  width: 42px; height: 42px; border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: #fff;
+}
+.lightbox-close:hover { background: rgba(255,255,255,0.2); }
+.lightbox-close svg { width: 18px; height: 18px; }
 
 /* ── VERSIONS ── */
 .ver-desc { font-size: 14px; color: var(--text2); margin-bottom: 28px; }
@@ -320,6 +551,10 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 500; }
   .section{padding:64px 24px;}
   .proj-head{flex-direction:column;}
   .proj-card{padding:22px 20px;}
+  .modal-header { padding: 24px 20px 18px; }
+  .modal-body { padding: 20px 20px 28px; }
+  .modal-title { font-size: 18px; }
+  .feature-list { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -399,7 +634,6 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 500; }
   <h2>Skills &amp; Tools</h2>
   <div class="skills-grid">
 
-    <!-- Python -->
     <div class="skill-card">
       <div class="skill-icon">
         <svg viewBox="0 0 48 48" fill="none">
@@ -411,7 +645,6 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 500; }
       <div class="skill-sub">Models · Wizards · Controllers</div>
     </div>
 
-    <!-- XML / QWeb -->
     <div class="skill-card">
       <div class="skill-icon">
         <svg viewBox="0 0 48 48" fill="none">
@@ -424,19 +657,13 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 500; }
       <div class="skill-sub">Views · Reports · Templates</div>
     </div>
 
-    <!-- Odoo — logo style: purple 'o' ring + grey oo  -->
     <div class="skill-card">
       <div class="skill-icon">
-        <!-- Replicating the Odoo logo: first letter 'o' in purple ring, rest grey thick rings -->
         <svg viewBox="0 0 64 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- first 'o' purple -->
           <circle cx="11" cy="11" r="7" fill="none" stroke="#714B67" stroke-width="4.5"/>
-          <!-- 'd' grey: circle + vertical bar -->
           <circle cx="29" cy="11" r="7" fill="none" stroke="#AFAFAF" stroke-width="4.5"/>
           <rect x="36" y="2" width="4.5" height="18" rx="2.25" fill="#AFAFAF"/>
-          <!-- 'o' grey -->
           <circle cx="48" cy="11" r="7" fill="none" stroke="#AFAFAF" stroke-width="4.5"/>
-          <!-- 'o' grey -->
           <circle cx="62" cy="11" r="7" fill="none" stroke="#AFAFAF" stroke-width="4.5"/>
         </svg>
       </div>
@@ -444,7 +671,6 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 500; }
       <div class="skill-sub">Custom Module Dev</div>
     </div>
 
-    <!-- PostgreSQL -->
     <div class="skill-card">
       <div class="skill-icon">
         <svg viewBox="0 0 48 48" fill="none">
@@ -459,7 +685,6 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 500; }
       <div class="skill-sub">Queries · DB Management</div>
     </div>
 
-    <!-- JavaScript / OWL -->
     <div class="skill-card">
       <div class="skill-icon">
         <svg viewBox="0 0 48 48" fill="none">
@@ -471,7 +696,6 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 500; }
       <div class="skill-sub">Frontend Components</div>
     </div>
 
-    <!-- Git -->
     <div class="skill-card">
       <div class="skill-icon">
         <svg viewBox="0 0 48 48" fill="none">
@@ -492,26 +716,82 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 500; }
   <h2>Projects</h2>
   <div class="projects-grid">
 
-    <div class="proj-card">
+    <!-- PROJECT 1: Odoo Pipeline Dashboard -->
+    <!-- <div class="proj-card" onclick="openModal('proj-pipeline')">
       <div class="proj-head">
         <div class="proj-title">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 17H2a3 3 0 000 6h20a3 3 0 000-6z"/><path d="M15 10H2a3 3 0 000 6h13"/><path d="M8 3H2a3 3 0 000 6h6"/></svg>
+          Odoo Pipeline Dashboard
+        </div>
+        <div class="proj-badges"><span class="badge m">Odoo Module</span></div>
+      </div>
+      <p class="proj-desc">A real-time CRM pipeline dashboard built inside Odoo that gives sales teams a visual overview of all deals across stages — with filters, conversion rates, and revenue summaries accessible at a glance.</p>
+      <div class="proj-footer">
+        <div class="tech-row">
+          <span class="tech">Python</span>
+          <span class="tech">OWL / JS</span>
+          <span class="tech">QWeb</span>
+          <span class="tech">CRM Module</span>
+        </div>
+        <span class="proj-view-hint">
+          View Details
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </span>
+      </div>
+    </div> -->
+
+    <!-- PROJECT 2: Odoo REST API Integration -->
+    <!-- <div class="proj-card" onclick="openModal('proj-api')">
+      <div class="proj-head">
+        <div class="proj-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+          Odoo REST API Integration
+        </div>
+        <div class="proj-badges"><span class="badge m">Odoo Module</span></div>
+      </div>
+      <p class="proj-desc">Custom REST API endpoints built directly in Odoo using Python controllers — enabling third-party apps and mobile clients to securely read and write data (products, orders, customers) to the Odoo backend.</p>
+      <div class="proj-footer">
+        <div class="tech-row">
+          <span class="tech">Python</span>
+          <span class="tech">REST API</span>
+          <span class="tech">JSON</span>
+          <span class="tech">HTTP Controllers</span>
+        </div>
+        <span class="proj-view-hint">
+          View Details
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </span>
+      </div>
+    </div> -->
+
+    <!-- PROJECT 3: Stock Newsletter Alert -->
+    <!-- <div class="proj-card" onclick="openModal('proj-stock')"> -->
+    <div class="proj-card">
+      <div class="proj-head">
+        <div class="proj-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
           Stock Newsletter Alert
         </div>
         <div class="proj-badges"><span class="badge m">Odoo Module</span></div>
       </div>
-      <p class="proj-desc">Automatically sends email notifications to newsletter subscribers when a product's stock falls below a set threshold — and again when it's restocked. Keeps customers informed about product availability in real time, straight from the Odoo inventory system.</p>
-      <div class="tech-row">
-        <span class="tech">Python</span>
-        <span class="tech">XML</span>
-        <span class="tech">QWeb</span>
-        <span class="tech">Email Alerts</span>
-        <span class="tech">Stock Module</span>
-        <span class="tech">Scheduled Tasks</span>
+      <p class="proj-desc">Automatically sends email notifications to newsletter subscribers when a product's stock falls below a set threshold — and again when it's restocked. Keeps customers informed in real time, straight from the Odoo inventory system.</p>
+      <div class="proj-footer">
+        <div class="tech-row">
+          <span class="tech">Python</span>
+          <span class="tech">XML</span>
+          <span class="tech">Email Alerts</span>
+          <span class="tech">Stock Module</span>
+        </div>
+        <!-- <span class="proj-view-hint">
+          View Details
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </span> -->
       </div>
     </div>
 
-    <div class="proj-card">
+    <!-- PROJECT 4: Website Quotation System -->
+    <!-- <div class="proj-card" onclick="openModal('proj-quote')"> -->
+      <div class="proj-card">
       <div class="proj-head">
         <div class="proj-title">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 8l3 3 4-5"/></svg>
@@ -519,79 +799,53 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 500; }
         </div>
         <div class="proj-badges"><span class="badge m">Odoo Module</span></div>
       </div>
-      <p class="proj-desc">Lets customers request a product quote or price estimate directly from the Odoo website. Can be toggled on or off from the backend settings. Sends a clean, branded quotation PDF for product estimation, making pre-sales communication smooth and professional.</p>
-      <div class="tech-row">
-        <span class="tech">Python</span>
-        <span class="tech">XML</span>
-        <span class="tech">Odoo Website</span>
-        <span class="tech">PDF Reports</span>
-        <span class="tech">Settings Toggle</span>
-        <span class="tech">Email</span>
+      <p class="proj-desc">Lets customers request a product quote or price estimate directly from the Odoo website. Can be toggled on or off from backend settings. Sends a clean, branded quotation PDF, making pre-sales communication smooth and professional.</p>
+      <div class="proj-footer">
+        <div class="tech-row">
+          <span class="tech">Python</span>
+          <span class="tech">XML</span>
+          <span class="tech">PDF Reports</span>
+          <span class="tech">Odoo Website</span>
+        </div>
+        <!-- <span class="proj-view-hint">
+          View Details
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </span> -->
       </div>
     </div>
 
-    <div class="proj-card">
+    <!-- PROJECT 5: Website Hide Price -->
+    <div class="proj-card" onclick="openModal('proj-hideprice')">
       <div class="proj-head">
         <div class="proj-title">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-          Website Hide Price
+          Website Price Visibility
         </div>
         <div class="proj-badges"><span class="badge m">Odoo Module</span></div>
       </div>
       <p class="proj-desc">A settings-based module that lets admins show or hide product prices on the Odoo website with a single toggle. Ideal for B2B stores, quote-only businesses, or shops that want to hide pricing from public visitors before they log in.</p>
-      <div class="tech-row">
-        <span class="tech">Python</span>
-        <span class="tech">XML</span>
-        <span class="tech">OWL / JS</span>
-        <span class="tech">Website Settings</span>
-        <span class="tech">eCommerce</span>
+      <div class="proj-footer">
+        <div class="tech-row">
+          <span class="tech">Python</span>
+          <span class="tech">XML</span>
+          <span class="tech">OWL / JS</span>
+          <span class="tech">eCommerce</span>
+        </div>
+        <span class="proj-view-hint">
+          View Details
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </span>
       </div>
     </div>
-    <!--<div class="proj-card dim">-->
-    <!--  <div class="proj-head">-->
-    <!--    <div class="proj-title">-->
-    <!--      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">-->
-    <!--        <path d="M12 1v22"/>-->
-    <!--        <path d="M17 5H9.5a3.5 3.5 0 000 7H15a3.5 3.5 0 010 7H6"/>-->
-    <!--      </svg>-->
-    <!--      Custom Discount &amp; Loyalty Module for Odoo POS-->
-    <!--    </div>-->
-    
-    <!--    <div class="proj-badges">-->
-    <!--      <span class="badge t">In Progress</span>-->
-    <!--    </div>-->
-    <!--  </div>-->
 
-    <!--  <p class="proj-desc">-->
-    <!--    A smart POS enhancement module for Odoo that introduces advanced discount rules,-->
-    <!--    customer loyalty points, and manager-controlled approvals directly inside the POS interface.-->
-    <!--    Designed to improve customer retention while giving businesses tighter control over discount policies.-->
-    <!--  </p>-->
-
-    <!--  <div class="tech-row" style="margin-top:18px;">-->
-    <!--    <span class="tech">Python</span>-->
-    <!--    <span class="tech">OWL / JS</span>-->
-    <!--    <span class="tech">POS Module</span>-->
-    <!--    <span class="tech">Loyalty Points</span>-->
-    <!--    <span class="tech">Discount Rules</span>-->
-    <!--    <span class="tech">Manager PIN Override</span>-->
-    <!--    <span class="tech">POS UI</span>-->
-    <!--    <span class="tech">Backend Reports</span>-->
-    <!--  </div>-->
-    <!--</div>-->
-    
-    <!--Many more in progress-->
+    <!-- MORE COMING -->
     <div class="proj-card dim">
       <div class="proj-head">
-        <div class="proj-title">
-          And many more...
-        </div>
-    
-        <div class="proj-badges">
-          <span class="badge t">In Progress</span>
-        </div>
+        <div class="proj-title">And many more...</div>
+        <div class="proj-badges"><span class="badge t">In Progress</span></div>
       </div>
     </div>
+
   </div>
 </section>
 
@@ -658,7 +912,433 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 500; }
   Crafted by <a href="#">Tanmay Unadkat</a> · Odoo Developer · India
 </footer>
 
+<!-- ══════════════════════════════════════════════
+     MODALS
+══════════════════════════════════════════════ -->
+
+<!-- MODAL: Pipeline Dashboard -->
+<div class="modal-overlay" id="modal-proj-pipeline" onclick="overlayClose(event, 'proj-pipeline')">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-header-top">
+        <div class="modal-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 17H2a3 3 0 000 6h20a3 3 0 000-6z"/><path d="M15 10H2a3 3 0 000 6h13"/><path d="M8 3H2a3 3 0 000 6h6"/></svg>
+          Odoo Pipeline Dashboard
+        </div>
+        <button class="modal-close" onclick="closeModal('proj-pipeline')" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-badges">
+        <span class="badge m">Odoo Module</span>
+        <span class="badge t">CRM</span>
+      </div>
+    </div>
+    <div class="modal-body">
+
+      <div class="modal-section">
+        <div class="modal-section-title">Overview</div>
+        <p class="modal-desc">A real-time CRM pipeline dashboard built natively inside Odoo. Sales teams get a comprehensive visual overview of all deals across Kanban stages — with filtering by salesperson, team, or date range, plus live conversion rates and projected revenue summaries. Built as a custom OWL component embedded inside the Odoo backend, it replaces the default list/kanban with a richer analytics-first view without losing any native Odoo functionality.</p>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Key Features</div>
+        <div class="feature-list">
+          <div class="feature-item"><span class="feature-dot"></span>Real-time stage-wise deal count & revenue cards</div>
+          <div class="feature-item"><span class="feature-dot"></span>Filters: salesperson, team, date range</div>
+          <div class="feature-item"><span class="feature-dot"></span>Win/loss conversion rate per stage</div>
+          <div class="feature-item"><span class="feature-dot"></span>Projected vs actual revenue comparison</div>
+          <div class="feature-item"><span class="feature-dot"></span>Clickable stage cards → filtered CRM view</div>
+          <div class="feature-item"><span class="feature-dot"></span>Fully integrated with Odoo CRM module</div>
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Tech Stack</div>
+        <div class="modal-tech-row">
+          <span class="modal-tech">Python</span>
+          <span class="modal-tech">OWL / JS</span>
+          <span class="modal-tech">QWeb Templates</span>
+          <span class="modal-tech">CRM Module</span>
+          <span class="modal-tech">PostgreSQL</span>
+          <span class="modal-tech">XML Views</span>
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Screenshots</div>
+        <div class="screenshot-gallery">
+          <!-- Replace src with your actual screenshot paths, e.g. src="screenshots/pipeline-1.png" -->
+          <div class="screenshot-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            <span class="ph-label">Dashboard Overview<br>Add screenshot here</span>
+          </div>
+          <div class="screenshot-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            <span class="ph-label">Stage Filter View<br>Add screenshot here</span>
+          </div>
+          <div class="screenshot-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            <span class="ph-label">Revenue Summary<br>Add screenshot here</span>
+          </div>
+        </div>
+        <div class="screenshot-upload-note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          To add real screenshots: place your images in the same folder as this file, then replace the placeholder divs with <code style="background:rgba(0,160,157,0.1);padding:2px 6px;border-radius:4px;font-size:12px;">&lt;img class="proj-screenshot" src="your-image.png"&gt;</code>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: REST API Integration -->
+<div class="modal-overlay" id="modal-proj-api" onclick="overlayClose(event, 'proj-api')">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-header-top">
+        <div class="modal-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+          Odoo REST API Integration
+        </div>
+        <button class="modal-close" onclick="closeModal('proj-api')" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-badges">
+        <span class="badge m">Odoo Module</span>
+        <span class="badge t">API</span>
+      </div>
+    </div>
+    <div class="modal-body">
+
+      <div class="modal-section">
+        <div class="modal-section-title">Overview</div>
+        <p class="modal-desc">Custom REST API endpoints built inside Odoo using Python HTTP controllers, allowing external applications — mobile apps, ERPs, websites — to securely interact with Odoo data. Supports token-based authentication, rate limiting, and clean JSON responses for products, sales orders, customers, and inventory. Designed with clean separation of concerns so the API layer doesn't break with Odoo upgrades.</p>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Key Features</div>
+        <div class="feature-list">
+          <div class="feature-item"><span class="feature-dot"></span>GET/POST/PUT endpoints for core Odoo models</div>
+          <div class="feature-item"><span class="feature-dot"></span>Token-based API authentication</div>
+          <div class="feature-item"><span class="feature-dot"></span>JSON request & response handling</div>
+          <div class="feature-item"><span class="feature-dot"></span>Error handling with meaningful HTTP codes</div>
+          <div class="feature-item"><span class="feature-dot"></span>Pagination & filtering support</div>
+          <div class="feature-item"><span class="feature-dot"></span>Works across Odoo 16, 17, 18</div>
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Tech Stack</div>
+        <div class="modal-tech-row">
+          <span class="modal-tech">Python</span>
+          <span class="modal-tech">REST API</span>
+          <span class="modal-tech">JSON</span>
+          <span class="modal-tech">HTTP Controllers</span>
+          <span class="modal-tech">Token Auth</span>
+          <span class="modal-tech">XML</span>
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Screenshots</div>
+        <div class="screenshot-gallery">
+          <div class="screenshot-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            <span class="ph-label">API Response JSON<br>Add screenshot here</span>
+          </div>
+          <div class="screenshot-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            <span class="ph-label">Postman Test<br>Add screenshot here</span>
+          </div>
+        </div>
+        <div class="screenshot-upload-note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Place your images in the same folder, then replace placeholder divs with <code style="background:rgba(0,160,157,0.1);padding:2px 6px;border-radius:4px;font-size:12px;">&lt;img class="proj-screenshot" src="your-image.png"&gt;</code>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Stock Newsletter Alert -->
+<div class="modal-overlay" id="modal-proj-stock" onclick="overlayClose(event, 'proj-stock')">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-header-top">
+        <div class="modal-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          Stock Newsletter Alert
+        </div>
+        <button class="modal-close" onclick="closeModal('proj-stock')" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-badges">
+        <span class="badge m">Odoo Module</span>
+        <span class="badge t">Inventory</span>
+      </div>
+    </div>
+    <div class="modal-body">
+
+      <div class="modal-section">
+        <div class="modal-section-title">Overview</div>
+        <p class="modal-desc">An Odoo inventory module that monitors product stock levels and automatically triggers branded email notifications to newsletter subscribers. When stock drops below a configurable threshold, an alert goes out. When it's restocked, a follow-up "back in stock" email fires automatically — all without any manual intervention. Built using Odoo's scheduled actions (cron) and the native mail system for reliable delivery.</p>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Key Features</div>
+        <div class="feature-list">
+          <div class="feature-item"><span class="feature-dot"></span>Configurable low-stock threshold per product</div>
+          <div class="feature-item"><span class="feature-dot"></span>Automated "low stock" alert email to subscribers</div>
+          <div class="feature-item"><span class="feature-dot"></span>"Back in stock" notification on restock</div>
+          <div class="feature-item"><span class="feature-dot"></span>Branded QWeb email template</div>
+          <div class="feature-item"><span class="feature-dot"></span>Scheduled via Odoo cron (no manual trigger needed)</div>
+          <div class="feature-item"><span class="feature-dot"></span>Subscriber list managed via Odoo newsletter contacts</div>
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Tech Stack</div>
+        <div class="modal-tech-row">
+          <span class="modal-tech">Python</span>
+          <span class="modal-tech">XML</span>
+          <span class="modal-tech">QWeb Email</span>
+          <span class="modal-tech">Stock Module</span>
+          <span class="modal-tech">Scheduled Actions</span>
+          <span class="modal-tech">Mail Module</span>
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Screenshots</div>
+        <div class="screenshot-gallery">
+          <div class="screenshot-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            <span class="ph-label">Email Alert Preview<br>Add screenshot here</span>
+          </div>
+          <div class="screenshot-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            <span class="ph-label">Settings Config<br>Add screenshot here</span>
+          </div>
+          <div class="screenshot-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            <span class="ph-label">Cron Job Setup<br>Add screenshot here</span>
+          </div>
+        </div>
+        <div class="screenshot-upload-note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Place your images in the same folder, then replace placeholder divs with <code style="background:rgba(0,160,157,0.1);padding:2px 6px;border-radius:4px;font-size:12px;">&lt;img class="proj-screenshot" src="your-image.png"&gt;</code>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Website Quotation System -->
+<div class="modal-overlay" id="modal-proj-quote" onclick="overlayClose(event, 'proj-quote')">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-header-top">
+        <div class="modal-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 8l3 3 4-5"/></svg>
+          Website Quotation System
+        </div>
+        <button class="modal-close" onclick="closeModal('proj-quote')" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-badges">
+        <span class="badge m">Odoo Module</span>
+        <span class="badge t">Website</span>
+      </div>
+    </div>
+    <div class="modal-body">
+
+      <div class="modal-section">
+        <div class="modal-section-title">Overview</div>
+        <p class="modal-desc">A website-facing Odoo module that lets customers request a price quote directly from a product page on the Odoo website. The request creates a draft quotation in the Odoo Sales module, sends the customer a clean branded PDF estimate, and notifies the sales team — all automatically. The feature can be enabled or disabled from backend settings, making it perfect for businesses that operate quote-first rather than showing public prices.</p>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Key Features</div>
+        <div class="feature-list">
+          <div class="feature-item"><span class="feature-dot"></span>"Request a Quote" button on product pages</div>
+          <div class="feature-item"><span class="feature-dot"></span>Auto-creates draft Sale Order in backend</div>
+          <div class="feature-item"><span class="feature-dot"></span>Branded PDF quotation emailed to customer</div>
+          <div class="feature-item"><span class="feature-dot"></span>Sales team notified via Odoo activity</div>
+          <div class="feature-item"><span class="feature-dot"></span>Toggle on/off from Website settings</div>
+          <div class="feature-item"><span class="feature-dot"></span>Custom QWeb report for PDF design</div>
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Tech Stack</div>
+        <div class="modal-tech-row">
+          <span class="modal-tech">Python</span>
+          <span class="modal-tech">XML</span>
+          <span class="modal-tech">Odoo Website</span>
+          <span class="modal-tech">PDF Reports</span>
+          <span class="modal-tech">Settings Toggle</span>
+          <span class="modal-tech">Email</span>
+          <span class="modal-tech">Sale Module</span>
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Screenshots</div>
+        <div class="screenshot-gallery">
+          <div class="screenshot-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            <span class="ph-label">Product Page Button<br>Add screenshot here</span>
+          </div>
+          <div class="screenshot-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            <span class="ph-label">PDF Quotation<br>Add screenshot here</span>
+          </div>
+          <div class="screenshot-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            <span class="ph-label">Backend Settings<br>Add screenshot here</span>
+          </div>
+        </div>
+        <div class="screenshot-upload-note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Place your images in the same folder, then replace placeholder divs with <code style="background:rgba(0,160,157,0.1);padding:2px 6px;border-radius:4px;font-size:12px;">&lt;img class="proj-screenshot" src="your-image.png"&gt;</code>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Website Hide Price -->
+<div class="modal-overlay" id="modal-proj-hideprice" onclick="overlayClose(event, 'proj-hideprice')">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-header-top">
+        <div class="modal-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          Website Hide Price
+        </div>
+        <button class="modal-close" onclick="closeModal('proj-hideprice')" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-badges">
+        <span class="badge m">Odoo Module</span>
+        <span class="badge t">eCommerce</span>
+      </div>
+    </div>
+    <div class="modal-body">
+
+      <div class="modal-section">
+        <div class="modal-section-title">Overview</div>
+        <p class="modal-desc">A lightweight but highly practical Odoo eCommerce module that gives store admins full control over price visibility on the website. With a single toggle in Website Settings, all product prices can be hidden from public/portal visitors based on configuration. Perfect for B2B stores, tender-based businesses, or any store that doesn't want to show pricing publicly before a customer registers or logs in.</p>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Key Features</div>
+        <div class="feature-list">
+          <div class="feature-item"><span class="feature-dot"></span>Single toggle in Website Settings</div>
+          <div class="feature-item"><span class="feature-dot"></span>Hides prices on product list & product pages</div>
+          <div class="feature-item"><span class="feature-dot"></span>Hides prices on cart and checkout</div>
+          <div class="feature-item"><span class="feature-dot"></span>Hides price filter for products</div>
+          <div class="feature-item"><span class="feature-dot"></span>Works with Odoo's multi-website setup</div>
+          <div class="feature-item"><span class="feature-dot"></span>Maintain price visibility for public and portal users separately</div>
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Tech Stack</div>
+        <div class="modal-tech-row">
+          <span class="modal-tech">Python</span>
+          <span class="modal-tech">XML</span>
+          <span class="modal-tech">OWL / JS</span>
+          <span class="modal-tech">Website Settings</span>
+          <span class="modal-tech">eCommerce</span>
+          <span class="modal-tech">QWeb</span>
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Screenshots</div>
+        <div class="screenshot-gallery">
+          <img class="proj-screenshot" src="./projects/website_price_visibility/module1.png" />
+          <img class="proj-screenshot" src="./projects/website_price_visibility/settings2.png" />
+          <img class="proj-screenshot" src="./projects/website_price_visibility/product_grid3.png" />
+          <img class="proj-screenshot" src="./projects/website_price_visibility/product_main4.png" />
+          <img class="proj-screenshot" src="./projects/website_price_visibility/popup5.png" />
+          <img class="proj-screenshot" src="./projects/website_price_visibility/cart_popup6.png" />
+          <img class="proj-screenshot" src="./projects/website_price_visibility/checkout7.png" />
+          <img class="proj-screenshot" src="./projects/website_price_visibility/payment8.png" />
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox-overlay" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <img class="lightbox-img" id="lightbox-img" src="" alt="Screenshot">
+</div>
+
 <script>
+/* ── Modal logic ── */
+function openModal(id) {
+  const overlay = document.getElementById('modal-' + id);
+  if (!overlay) return;
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(id) {
+  const overlay = document.getElementById('modal-' + id);
+  if (!overlay) return;
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function overlayClose(event, id) {
+  if (event.target === event.currentTarget) closeModal(id);
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.open').forEach(el => {
+      const id = el.id.replace('modal-', '');
+      closeModal(id);
+    });
+    closeLightbox();
+  }
+});
+
+/* ── Lightbox logic ── */
+function openLightbox(src) {
+  const lb = document.getElementById('lightbox');
+  const img = document.getElementById('lightbox-img');
+  img.src = src;
+  lb.classList.add('open');
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+
+// Attach lightbox to any .proj-screenshot images
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('proj-screenshot')) {
+    openLightbox(e.target.src);
+  }
+});
+
+/* ── Scroll animations ── */
 const io = new IntersectionObserver((entries) => {
   entries.forEach(e => {
     if (e.isIntersecting) {
@@ -675,6 +1355,7 @@ document.querySelectorAll('.skill-card, .proj-card, .ver-card, .con-card').forEa
   io.observe(el);
 });
 
+/* ── Nav active link ── */
 const secs = document.querySelectorAll('section[id]');
 const links = document.querySelectorAll('.nav-links a');
 window.addEventListener('scroll', () => {
